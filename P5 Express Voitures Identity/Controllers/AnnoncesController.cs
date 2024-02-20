@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using P5_Express_Voitures_Identity.Models.Service;
 using P5_Express_Voitures_Identity.Data;
 using P5_Express_Voitures_Identity.Models;
 
@@ -13,16 +16,24 @@ namespace P5_Express_Voitures_Identity.Controllers
     public class AnnoncesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
+        private readonly ImageService _imageService;
 
-        public AnnoncesController(ApplicationDbContext context)
+        public AnnoncesController(ApplicationDbContext context, IConfiguration configuration, IWebHostEnvironment environment, ImageService imageService)
         {
             _context = context;
+            _configuration = configuration;
+            _environment = environment;
+            _imageService = imageService;
         }
 
         // GET: Annonces
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int idVoiture)
         {
-            return View(await _context.Annonces.ToListAsync());
+            Annonce annonce = _context?.Annonces?.FirstOrDefault(r => r.IdVoiture == idVoiture);
+
+            return View(annonce);
         }
 
         // GET: Annonces/Details/5
@@ -54,20 +65,73 @@ namespace P5_Express_Voitures_Identity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdVoiture,TitreAnnonce,DescriptionAnnonce")] Annonce annonce)
+        public async Task<IActionResult> Create([Bind("Id,IdVoiture, TitreAnnonce,DescriptionAnnonce, Photos")] Annonce annonce, List<IFormFile> fichier, int IdVoiture)
         {
+            //var annonceRecupere = await _context.Annonces.FirstOrDefaultAsync(a => a.IdVoiture == IdVoiture); //si on en récupère 1
+            //var annonces = await _context.Annonces.Where(a => a.IdVoiture == IdVoiture).ToListAsync(); //si on récupère une liste
+
             if (ModelState.IsValid)
             {
-                _context.Add(annonce);
-                await _context.SaveChangesAsync();
+                /*if (annonceRecupere.Photos != null)
+                foreach (var photo in annonceRecupere.Photos)
+                {
+                    if (photo.Fichier != null) ;
+                    {
+                        using (var stream = photo.Fichier.OpenReadStream())
+                        {
+                            await _imageService.UploadAsync(stream);
+                        }
+                    }
+                }*/
+
+                if (fichier != null && fichier.Count > 0)
+                {
+                    foreach (var file in fichier)
+                    {
+                        if (file != null && file.Length > 0)
+                        {
+                            // créer un nouvel objet Photo et l'ajouter à la collection Photos de l'annonce
+                            var photo = new Photo
+                            {
+                                Nom = file.FileName,
+                                IdAnnonce = annonce.Id
+                            };
+
+                            if (annonce.Photos == null)
+                            {
+                                annonce.Photos = new List<Photo>();
+                            }
+                            annonce.Photos.Add(photo);
+
+                            _context.Add(annonce);
+                            await _context.SaveChangesAsync();
+                            var pathService = new PathService(_configuration, _environment);
+                            var filePath = pathService.GetUploadsPath(photo.Nom);
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // sauvegarder l'annonce dans la base de données sans photo
+                    _context.Add(annonce);
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(annonce);
+
         }
 
+
         // GET: Annonces/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int idVoiture)
         {
+            ViewData["idVoiture"] = idVoiture;
             if (id == null)
             {
                 return NotFound();
@@ -86,8 +150,11 @@ namespace P5_Express_Voitures_Identity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdVoiture,TitreAnnonce,DescriptionAnnonce")] Annonce annonce)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TitreAnnonce,DescriptionAnnonce")] Annonce annonce)
         {
+            if (int.TryParse(Request.Form["idVoiture"], out int idVoiture))
+                annonce.IdVoiture = idVoiture;
+
             if (id != annonce.Id)
             {
                 return NotFound();
@@ -96,7 +163,39 @@ namespace P5_Express_Voitures_Identity.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
+                {/*
+                    if (fichier != null && fichier.Length>0)
+                    {
+                        // créer un nouvel objet Photo et l'ajouter à la collection Photos de l'annonce
+                        var photo = new Photo
+                        {
+                            Nom = fichier.FileName,
+                            IdAnnonce = annonce.Id
+                        };
+
+                        if (annonce.Photos == null)
+                        {
+                            annonce.Photos = new List<Photo>();
+                        }
+                        annonce.Photos.Add(photo);
+
+                        _context.Add(annonce);
+                        await _context.SaveChangesAsync();
+                        var pathService = new PathService(_configuration, _environment);
+                        var filePath = pathService.GetUploadsPath(photo.Nom);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await fichier.CopyToAsync(stream);
+                        }
+                    }
+                    else
+                    {
+                        // sauvegarder l'annonce dans la base de données sans photo
+                        _context.Add(annonce);
+                        await _context.SaveChangesAsync();
+                    }
+                    */
+                    //Code d'origine:
                     _context.Update(annonce);
                     await _context.SaveChangesAsync();
                 }
@@ -111,7 +210,7 @@ namespace P5_Express_Voitures_Identity.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { idVoiture = annonce.IdVoiture });
             }
             return View(annonce);
         }
@@ -152,6 +251,43 @@ namespace P5_Express_Voitures_Identity.Controllers
         private bool AnnonceExists(int id)
         {
             return _context.Annonces.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> AjouterPhoto(int idAnnonce, IFormFile fichier)
+        {
+            // récupére l'annonce correspondante à l'ID
+            var annonce = await _context.Annonces.FindAsync(idAnnonce);
+
+            if (annonce == null)
+            {
+                return NotFound();
+            }
+
+            // créer un nouvel objet Photo et l'ajouter à la collection Photos de l'annonce
+            var photo = new Photo
+            {
+                Nom = fichier.FileName,
+                IdAnnonce = idAnnonce
+            };
+
+            if (annonce.Photos == null)
+            {
+                annonce.Photos = new List<Photo>();
+            }
+            annonce.Photos.Add(photo);
+
+            // sauvegarder l'annonce dans la base de données
+            await _context.SaveChangesAsync();
+
+            // télécharger le fichier dans le répertoire approprié
+            var pathService = new PathService(_configuration, _environment);
+            var filePath = pathService.GetUploadsPath(photo.Nom);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await fichier.CopyToAsync(stream);
+            }
+
+            return RedirectToAction(nameof(Details), new { idAnnonce = idAnnonce });
         }
     }
 }

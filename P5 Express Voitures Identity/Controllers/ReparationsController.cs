@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using P5_Express_Voitures_Identity.ViewModels;
 using P5_Express_Voitures_Identity.Data;
 using P5_Express_Voitures_Identity.Models;
 
@@ -20,9 +21,26 @@ namespace P5_Express_Voitures_Identity.Controllers
         }
 
         // GET: Reparations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int idVoiture)
         {
-            return View(await _context.Reparations.ToListAsync());
+            List<ReparationavecVoiture> reparations = _context.Reparations
+                .Where(r => r.IdVoiture == idVoiture)
+                .Select(r => new ReparationavecVoiture { Reparation = r, Voiture = r.Voiture })
+                .ToList();
+
+            foreach (var r in reparations)
+            {
+                r.Reparation.Voiture = _context.Voitures.FirstOrDefault(Voiture => Voiture.Id == r.Reparation.IdVoiture);
+            }
+
+            ReparationsVM model = new(idVoiture, reparations, _context)
+            {
+                IdVoiture = idVoiture,
+                Reparations = reparations,
+                _context = _context
+            };
+
+            return View(model);
         }
 
         // GET: Reparations/Details/5
@@ -44,8 +62,9 @@ namespace P5_Express_Voitures_Identity.Controllers
         }
 
         // GET: Reparations/Create
-        public IActionResult Create()
+        public IActionResult Create(int idVoiture)
         {
+            ViewData["idVoiture"] = idVoiture;
             return View();
         }
 
@@ -54,14 +73,28 @@ namespace P5_Express_Voitures_Identity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdVoiture,TypeIntervention,PrixIntervention")] Reparation reparation)
+        public async Task<IActionResult> Create([Bind("Id,TypeIntervention,PrixIntervention")] Reparation reparation)
         {
-            if (ModelState.IsValid)
+
+            if (int.TryParse(Request.Form["idVoiture"], out int idVoiture))
             {
-                _context.Add(reparation);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                reparation.IdVoiture = idVoiture;
+
+                if (ModelState.IsValid)
+                {
+                    // Ajoutez la réparation à la base de données
+                    _context.Add(reparation);
+                    await _context.SaveChangesAsync();
+
+                    // Redirigez vers la vue Index
+                    return RedirectToAction(nameof(Index), new { idVoiture = idVoiture });
+                }
             }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+
             return View(reparation);
         }
 
@@ -86,8 +119,11 @@ namespace P5_Express_Voitures_Identity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdVoiture,TypeIntervention,PrixIntervention")] Reparation reparation)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TypeIntervention,PrixIntervention")] Reparation reparation)
         {
+            if (int.TryParse(Request.Form["idVoiture"], out int idVoiture))
+                reparation.IdVoiture = idVoiture;
+
             if (id != reparation.Id)
             {
                 return NotFound();
@@ -111,7 +147,7 @@ namespace P5_Express_Voitures_Identity.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { idVoiture = reparation.IdVoiture });
             }
             return View(reparation);
         }
@@ -146,7 +182,8 @@ namespace P5_Express_Voitures_Identity.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Index), new { idVoiture = reparation.IdVoiture });
         }
 
         private bool ReparationExists(int id)

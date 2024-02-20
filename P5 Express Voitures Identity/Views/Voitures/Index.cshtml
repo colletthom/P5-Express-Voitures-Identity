@@ -1,89 +1,98 @@
-﻿@model IEnumerable<P5_Express_Voitures_Identity.Models.Voiture>
+﻿@model IEnumerable<P5_Express_Voitures_Identity.ViewModels.VoitureVM>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Liste des Voitures</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Créer nouvelle Voiture</a> |
+    <a asp-controller="Marges">Modifier la marge par voiture (actuellement de @Model.FirstOrDefault()?.MargeParVoiture() €)</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CodeVin)
+                Code Vin
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Annee)
+                @Html.DisplayNameFor(model => model.Voiture.Annee)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Marque)
+                @Html.DisplayNameFor(model => model.Voiture.Marque)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Modele)
+                @Html.DisplayNameFor(model => model.Voiture.Modele)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Finition)
+                @Html.DisplayNameFor(model => model.Voiture.Finition)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateAchat)
+                Date Achat
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrixAchat)
+                Prix Achat
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateDisponibiliteALaVente)
+                total des réparations
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrixVente)
+                Date Disponibilite A La Vente
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateVente)
+                Prix Vente
+            </th>
+            <th>
+                Date Vente
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CodeVin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Annee)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Marque)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Modele)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Finition)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateAchat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrixAchat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateDisponibiliteALaVente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrixVente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateVente)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.CodeVin)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.Annee)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.Marque)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.Modele)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.Finition)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.DateAchat)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.PrixAchat)
+                </td>
+                <td>
+                    @item.TotalReparation
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.DateDisponibiliteALaVente)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.PrixVente)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voiture.DateVente)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Voiture.Id">Modification</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Voiture.Id">Suppresion</a> |
+                    <a asp-controller="Reparations" asp-action="Index" asp-route-idVoiture="@item.Voiture.Id">réparation</a> |
+                    <a asp-controller="Annonces" asp-action="Index" asp-route-idVoiture="@item.Voiture.Id">Annonce</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -10,14 +10,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="idVoiture" value="@ViewData["idVoiture"]" />
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="IdVoiture" class="control-label"></label>
-                <input asp-for="IdVoiture" class="form-control" />
-                <span asp-validation-for="IdVoiture" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="TitreAnnonce" class="control-label"></label>
                 <input asp-for="TitreAnnonce" class="form-control" />
@@ -29,6 +25,11 @@
                 <span asp-validation-for="DescriptionAnnonce" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Photos" class="control-label"></label>
+                <input type="file" asp-for="Photos" class="form-control" />
+                <span asp-validation-for="Photos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -36,9 +37,11 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-idVoiture="@Model?.IdVoiture">Retour à l'annonce</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

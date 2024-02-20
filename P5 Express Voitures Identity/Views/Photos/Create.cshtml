@@ -1,5 +1,6 @@
 ﻿@model P5_Express_Voitures_Identity.Models.Photo
 
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -12,16 +13,6 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdAnnonce" class="control-label"></label>
-                <input asp-for="IdAnnonce" class="form-control" />
-                <span asp-validation-for="IdAnnonce" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Nom" class="control-label"></label>
-                <input asp-for="Nom" class="form-control" />
-                <span asp-validation-for="Nom" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="LienPhoto" class="control-label"></label>
                 <input asp-for="LienPhoto" class="form-control" />
@@ -39,5 +30,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

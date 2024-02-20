@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using P5_Express_Voitures_Identity.ViewModels;
 using P5_Express_Voitures_Identity.Data;
 using P5_Express_Voitures_Identity.Models;
 
@@ -22,7 +23,24 @@ namespace P5_Express_Voitures_Identity.Controllers
         // GET: Voitures
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Voitures.ToListAsync());
+            List<Voiture> voitures = await _context.Voitures
+                .Include(v => v.Reparations)
+                .ToListAsync();
+
+            List<VoitureVM> voitureVMs = voitures.Select(v => new VoitureVM(v, _context)).ToList();
+
+            foreach (var vm in voitureVMs)
+            {
+                vm.CalculTotalReparation();
+
+                if (vm.Voiture.PrixVente == null)
+                {
+                    vm.Voiture.PrixVente = vm.CalculPrixVente();
+                }
+            }
+
+
+            return View(voitureVMs);
         }
 
         // GET: Voitures/Details/5
@@ -60,8 +78,31 @@ namespace P5_Express_Voitures_Identity.Controllers
             {
                 _context.Add(voiture);
                 await _context.SaveChangesAsync();
+
+                //création d'une annonce en même temps que la création de la voiture
+                Annonce AnnonceCree = new Annonce
+                {
+                    IdVoiture = voiture.Id,
+                    TitreAnnonce = "Vente d'une voiture de marque " + voiture.Marque + " et de modèle "
+                           + voiture.Modele + " de " + voiture.Annee
+
+                };
+
+                if (voiture.DateVente != null)
+                {
+                    VoitureVM voitureVM = new VoitureVM(voiture, _context);
+                    voiture.PrixVente = voitureVM.CalculPrixVente();
+                    _context.Voitures.Update(voiture);
+                    await _context.SaveChangesAsync();
+                }
+
+                _context.Add(AnnonceCree);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
+
             return View(voiture);
         }
 
@@ -97,6 +138,14 @@ namespace P5_Express_Voitures_Identity.Controllers
             {
                 try
                 {
+                    if (voiture.PrixVente == null && voiture.DateVente != null)
+                    {
+                        VoitureVM voitureVM = new VoitureVM(voiture, _context);
+                        voiture.PrixVente = voitureVM.CalculPrixVente();
+                        _context.Voitures.Update(voiture);
+                        await _context.SaveChangesAsync();
+                    }
+
                     _context.Update(voiture);
                     await _context.SaveChangesAsync();
                 }
@@ -140,10 +189,17 @@ namespace P5_Express_Voitures_Identity.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var voiture = await _context.Voitures.FindAsync(id);
-            if (voiture != null)
+            var annonce = await _context.Annonces.FindAsync(id);
+            if (voiture != null && annonce != null)
+            {
+                _context.Annonces.Remove(annonce);
+                _context.Voitures.Remove(voiture);
+            }
+            else if (voiture != null)
             {
                 _context.Voitures.Remove(voiture);
             }
+
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
