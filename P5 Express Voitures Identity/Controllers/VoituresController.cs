@@ -191,7 +191,9 @@ namespace P5_Express_Voitures_Identity.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var voiture = await _context.Voitures.FindAsync(id);
-            var annonce = await _context.Annonces.FindAsync(id);
+            var annonce = await _context.Annonces
+                .SingleOrDefaultAsync(a => a.IdVoiture == id);
+
             if (voiture != null && annonce != null)
             {
                 _context.Annonces.Remove(annonce);
