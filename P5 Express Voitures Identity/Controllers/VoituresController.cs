@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using P5_Express_Voitures_Identity.ViewModels;
 using P5_Express_Voitures_Identity.Data;
 using P5_Express_Voitures_Identity.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace P5_Express_Voitures_Identity.Controllers
 {
+    [Authorize]
     public class VoituresController : Controller
     {
         private readonly ApplicationDbContext _context;

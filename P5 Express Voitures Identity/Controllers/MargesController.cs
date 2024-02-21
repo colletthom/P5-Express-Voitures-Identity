@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using P5_Express_Voitures_Identity.Data;
 using P5_Express_Voitures_Identity.Models;
 
 namespace P5_Express_Voitures_Identity.Controllers
 {
+    [Authorize]
     public class MargesController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -10,9 +10,11 @@ using Microsoft.Extensions.Hosting;
 using P5_Express_Voitures_Identity.Models.Service;
 using P5_Express_Voitures_Identity.Data;
 using P5_Express_Voitures_Identity.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace P5_Express_Voitures_Identity.Controllers
 {
+    [Authorize]
     public class AnnoncesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -65,7 +67,7 @@ namespace P5_Express_Voitures_Identity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdVoiture, TitreAnnonce,DescriptionAnnonce, Photos")] Annonce annonce, List<IFormFile> fichier, int IdVoiture)
+        public async Task<IActionResult> Create([Bind("Id,IdVoiture, TitreAnnonce,DescriptionAnnonce, Photos")] Annonce annonce, List<IFormFile> Photos, int IdVoiture)
         {
             //var annonceRecupere = await _context.Annonces.FirstOrDefaultAsync(a => a.IdVoiture == IdVoiture); //si on en récupère 1
             //var annonces = await _context.Annonces.Where(a => a.IdVoiture == IdVoiture).ToListAsync(); //si on récupère une liste
@@ -75,18 +77,18 @@ namespace P5_Express_Voitures_Identity.Controllers
                 /*if (annonceRecupere.Photos != null)
                 foreach (var photo in annonceRecupere.Photos)
                 {
-                    if (photo.Fichier != null) ;
+                    if (photo.Photos != null) ;
                     {
-                        using (var stream = photo.Fichier.OpenReadStream())
+                        using (var stream = photo.Photos.OpenReadStream())
                         {
                             await _imageService.UploadAsync(stream);
                         }
                     }
                 }*/
 
-                if (fichier != null && fichier.Count > 0)
+                if (Photos != null && Photos.Count > 0)
                 {
-                    foreach (var file in fichier)
+                    foreach (var file in Photos)
                     {
                         if (file != null && file.Length > 0)
                         {
@@ -150,7 +152,7 @@ namespace P5_Express_Voitures_Identity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TitreAnnonce,DescriptionAnnonce")] Annonce annonce)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TitreAnnonce,DescriptionAnnonce")] Annonce annonce, IFormFile Photos, int IdVoiture)
         {
             if (int.TryParse(Request.Form["idVoiture"], out int idVoiture))
                 annonce.IdVoiture = idVoiture;
@@ -163,13 +165,13 @@ namespace P5_Express_Voitures_Identity.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {/*
-                    if (fichier != null && fichier.Length>0)
+                {
+                    if (Photos != null && Photos.Length>0)
                     {
                         // créer un nouvel objet Photo et l'ajouter à la collection Photos de l'annonce
                         var photo = new Photo
                         {
-                            Nom = fichier.FileName,
+                            Nom = Photos.FileName,
                             IdAnnonce = annonce.Id
                         };
 
@@ -185,7 +187,7 @@ namespace P5_Express_Voitures_Identity.Controllers
                         var filePath = pathService.GetUploadsPath(photo.Nom);
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            await fichier.CopyToAsync(stream);
+                            await Photos.CopyToAsync(stream);
                         }
                     }
                     else
@@ -194,10 +196,11 @@ namespace P5_Express_Voitures_Identity.Controllers
                         _context.Add(annonce);
                         await _context.SaveChangesAsync();
                     }
-                    */
+                    
                     //Code d'origine:
+                    /*
                     _context.Update(annonce);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();*/
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -253,7 +256,7 @@ namespace P5_Express_Voitures_Identity.Controllers
             return _context.Annonces.Any(e => e.Id == id);
         }
 
-        public async Task<IActionResult> AjouterPhoto(int idAnnonce, IFormFile fichier)
+        public async Task<IActionResult> AjouterPhoto(int idAnnonce, IFormFile Photos)
         {
             // récupére l'annonce correspondante à l'ID
             var annonce = await _context.Annonces.FindAsync(idAnnonce);
@@ -266,7 +269,7 @@ namespace P5_Express_Voitures_Identity.Controllers
             // créer un nouvel objet Photo et l'ajouter à la collection Photos de l'annonce
             var photo = new Photo
             {
-                Nom = fichier.FileName,
+                Nom = Photos.FileName,
                 IdAnnonce = idAnnonce
             };
 
@@ -284,7 +287,7 @@ namespace P5_Express_Voitures_Identity.Controllers
             var filePath = pathService.GetUploadsPath(photo.Nom);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await fichier.CopyToAsync(stream);
+                await Photos.CopyToAsync(stream);
             }
 
             return RedirectToAction(nameof(Details), new { idAnnonce = idAnnonce });
