@@ -175,13 +175,6 @@ namespace P5_Express_Voitures_Identity.Controllers
                             IdAnnonce = annonce.Id
                         };
 
-                        if (annonce.Photos == null)
-                        {
-                            annonce.Photos = new List<Photo>();
-                        }
-                        annonce.Photos.Add(photo);
-
-                        _context.Add(annonce);
                         await _context.SaveChangesAsync();
                         var pathService = new PathService(_configuration, _environment);
                         var filePath = pathService.GetUploadsPath(photo.Nom);
@@ -189,6 +182,15 @@ namespace P5_Express_Voitures_Identity.Controllers
                         {
                             await Photos.CopyToAsync(stream);
                         }
+
+                        if (annonce.Photos == null)
+                        {
+                            annonce.Photos = new List<Photo>();
+                        }
+                        photo.LienPhoto = filePath;
+                        annonce.Photos.Add(photo);
+                        _context.Annonces.Update(annonce);
+                        await _context.SaveChangesAsync();
                     }
                     else
                     {
