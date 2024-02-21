@@ -11,6 +11,7 @@ using P5_Express_Voitures_Identity.Models.Service;
 using P5_Express_Voitures_Identity.Data;
 using P5_Express_Voitures_Identity.Models;
 using Microsoft.AspNetCore.Authorization;
+using P5_Express_Voitures_Identity.ViewModels;
 
 namespace P5_Express_Voitures_Identity.Controllers
 {
@@ -134,17 +135,25 @@ namespace P5_Express_Voitures_Identity.Controllers
         public async Task<IActionResult> Edit(int? id, int idVoiture)
         {
             ViewData["idVoiture"] = idVoiture;
+
             if (id == null)
             {
                 return NotFound();
             }
-
+            
             var annonce = await _context.Annonces.FindAsync(id);
             if (annonce == null)
             {
                 return NotFound();
             }
-            return View(annonce);
+            else
+            {
+                annonce.Photos = _context.Photos
+                    .Where(a => a.IdAnnonce == id)
+                    .ToList();
+
+                return View(annonce);
+            }
         }
 
         // POST: Annonces/Edit/5
@@ -154,6 +163,7 @@ namespace P5_Express_Voitures_Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,TitreAnnonce,DescriptionAnnonce")] Annonce annonce, IFormFile Photos, int IdVoiture)
         {
+            ViewData["idVoiture"] = IdVoiture;
             if (int.TryParse(Request.Form["idVoiture"], out int idVoiture))
                 annonce.IdVoiture = idVoiture;
 
@@ -197,12 +207,7 @@ namespace P5_Express_Voitures_Identity.Controllers
                         // sauvegarder l'annonce dans la base de données sans photo
                         _context.Add(annonce);
                         await _context.SaveChangesAsync();
-                    }
-                    
-                    //Code d'origine:
-                    /*
-                    _context.Update(annonce);
-                    await _context.SaveChangesAsync();*/
+                    }                   
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -215,7 +220,7 @@ namespace P5_Express_Voitures_Identity.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index), new { idVoiture = annonce.IdVoiture });
+                return RedirectToAction(nameof(Edit), new { idVoiture = annonce.IdVoiture });
             }
             return View(annonce);
         }

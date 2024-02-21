@@ -13,10 +13,12 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" name="idVoiture" value="@ViewData["idVoiture"]" />
+            <input type="hidden" name="idAnnonce" value="@Model.IdAnnonce" />
             <div class="form-group">
-                <label asp-for="LienPhoto" class="control-label"></label>
-                <input asp-for="LienPhoto" class="form-control" />
-                <span asp-validation-for="LienPhoto" class="text-danger"></span>
+                <label asp-for="Nom" class="control-label"></label>
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -26,7 +28,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-controller="Annonces" asp-route-id="@Model.IdAnnonce" asp-route-idVoiture="@ViewData["idVoiture"]">Retour à l'édition de l'annonce</a>
 </div>
 
 @section Scripts {

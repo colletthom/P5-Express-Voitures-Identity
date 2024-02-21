@@ -28,8 +28,9 @@ namespace P5_Express_Voitures_Identity.Controllers
         }
 
         // GET: Photos/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int idVoiture)
         {
+            @ViewData["idVoiture"] = idVoiture;
             if (id == null)
             {
                 return NotFound();
@@ -68,8 +69,9 @@ namespace P5_Express_Voitures_Identity.Controllers
         }
 
         // GET: Photos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int idVoiture)
         {
+            ViewData["idVoiture"] = idVoiture;
             if (id == null)
             {
                 return NotFound();
@@ -90,6 +92,9 @@ namespace P5_Express_Voitures_Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,IdAnnonce,Nom,LienPhoto")] Photo photo)
         {
+            if (int.TryParse(Request.Form["idAnnonce"], out int idAnnonce))
+                photo.IdAnnonce = idAnnonce;
+
             if (id != photo.Id)
             {
                 return NotFound();
@@ -113,7 +118,12 @@ namespace P5_Express_Voitures_Identity.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
+                if (int.TryParse(Request.Form["idVoiture"], out int idVoiture))
+                {
+                    return RedirectToAction("Edit","Annonces", new { idVoiture = idVoiture, id = idAnnonce });
+                }
+
             }
             return View(photo);
         }
@@ -148,7 +158,7 @@ namespace P5_Express_Voitures_Identity.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Edit", "Annonces", new {  id = photo.IdAnnonce });
         }
 
         private bool PhotoExists(int id)
