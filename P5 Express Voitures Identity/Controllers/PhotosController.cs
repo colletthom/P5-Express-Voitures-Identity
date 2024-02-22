@@ -158,7 +158,7 @@ namespace P5_Express_Voitures_Identity.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Edit", "Annonces", new {  id = photo.IdAnnonce });
+            return RedirectToAction("Edit", "Annonces", new {  id = photo?.IdAnnonce });
         }
 
         private bool PhotoExists(int id)

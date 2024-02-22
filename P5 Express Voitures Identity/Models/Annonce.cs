@@ -16,7 +16,7 @@ namespace P5_Express_Voitures_Identity.Models
         [Display(Name = "Description Annonce")]
         public string? DescriptionAnnonce { get; set; }
 
-        [Display(Name = "Ajouter une photo")]
+        [Display(Name = "photos")]
         public ICollection<Photo>? Photos { get; set; }
 
         [NotMapped]

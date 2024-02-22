@@ -26,7 +26,6 @@ namespace P5_Express_Voitures_Identity.ViewModels
 
         public float CalculPrixVente()
         {
-            //ReparationService reparationService = new ReparationService(_context);
             return this.Voiture.PrixAchat + CalculTotalReparation() + this.MargeParVoiture();
         }
 

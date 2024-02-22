@@ -25,7 +25,7 @@ namespace P5_Express_Voitures_Identity.Models
 
         public class DateAchatValidationAttribute : ValidationAttribute
         {
-            protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+            protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
             {
                 DateTime? date = value as DateTime?;
 
@@ -77,7 +77,7 @@ namespace P5_Express_Voitures_Identity.Models
 
         public class DateVenteValidationAttribute : ValidationAttribute
         {
-            protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+            protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
             {
                 DateTime? date = value as DateTime?;
                 if (validationContext == null)

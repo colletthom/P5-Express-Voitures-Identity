@@ -4,6 +4,15 @@
     ViewData["Title"] = "Index";
 }
 
+<head>
+    <style>
+        .img-thumbnail {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+
 <h1>Annonce de la voiture :</h1>
 
 <table class="table">
@@ -30,9 +39,19 @@
             <td>
                 @Html.DisplayFor(modelItem => modelItem.DescriptionAnnonce)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => modelItem.Photos)
-            </td>
+             @if (Model.Photos == null || !Model.Photos.Any())
+            {
+                <td>Aucune photo n'a été trouvée</td>
+            }
+            else
+            {
+                @foreach (var item in Model.Photos)
+                {
+                    <td>
+                        <img src="@Url.Content("~/Voitures/images/" + System.IO.Path.GetFileName(item.LienPhoto))" class="img-thumbnail" />
+                    </td>
+                }
+            }
             <td>
                 <a asp-action="Edit" asp-route-id="@Model.Id" asp-route-idVoiture="@Model.IdVoiture">Edit</a> |
                 <a asp-action="Details" asp-route-id="@Model.Id" asp-route-idVoiture="@Model.IdVoiture">Details</a>

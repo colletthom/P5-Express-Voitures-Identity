@@ -34,7 +34,22 @@ namespace P5_Express_Voitures_Identity.Controllers
         // GET: Annonces
         public async Task<IActionResult> Index(int idVoiture)
         {
-            Annonce annonce = _context?.Annonces?.FirstOrDefault(r => r.IdVoiture == idVoiture);
+            Annonce? annonce = _context?.Annonces?.FirstOrDefault(r => r.IdVoiture == idVoiture);
+
+
+
+            if (annonce == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                annonce.Photos = _context.Photos
+                    .Where(a => a.IdAnnonce == annonce.Id)
+                    .ToList();
+
+                return View(annonce);
+            }
 
             return View(annonce);
         }
@@ -70,23 +85,9 @@ namespace P5_Express_Voitures_Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,IdVoiture, TitreAnnonce,DescriptionAnnonce, Photos")] Annonce annonce, List<IFormFile> Photos, int IdVoiture)
         {
-            //var annonceRecupere = await _context.Annonces.FirstOrDefaultAsync(a => a.IdVoiture == IdVoiture); //si on en récupère 1
-            //var annonces = await _context.Annonces.Where(a => a.IdVoiture == IdVoiture).ToListAsync(); //si on récupère une liste
-
+            /*
             if (ModelState.IsValid)
             {
-                /*if (annonceRecupere.Photos != null)
-                foreach (var photo in annonceRecupere.Photos)
-                {
-                    if (photo.Photos != null) ;
-                    {
-                        using (var stream = photo.Photos.OpenReadStream())
-                        {
-                            await _imageService.UploadAsync(stream);
-                        }
-                    }
-                }*/
-
                 if (Photos != null && Photos.Count > 0)
                 {
                     foreach (var file in Photos)
@@ -125,7 +126,7 @@ namespace P5_Express_Voitures_Identity.Controllers
                 }
 
                 return RedirectToAction(nameof(Index));
-            }
+            }*/
             return View(annonce);
 
         }
@@ -161,7 +162,7 @@ namespace P5_Express_Voitures_Identity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TitreAnnonce,DescriptionAnnonce")] Annonce annonce, IFormFile Photos, int IdVoiture)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TitreAnnonce,DescriptionAnnonce")] Annonce annonce, IFormFile? Photos, int IdVoiture)
         {
             ViewData["idVoiture"] = IdVoiture;
             if (int.TryParse(Request.Form["idVoiture"], out int idVoiture))
@@ -206,6 +207,7 @@ namespace P5_Express_Voitures_Identity.Controllers
                     {
                         // sauvegarder l'annonce dans la base de données sans photo
                         _context.Add(annonce);
+                        _context.Annonces.Update(annonce);
                         await _context.SaveChangesAsync();
                     }                   
                 }
@@ -221,7 +223,8 @@ namespace P5_Express_Voitures_Identity.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Edit), new { idVoiture = annonce.IdVoiture });
-            }
+             } 
+
             return View(annonce);
         }
 
