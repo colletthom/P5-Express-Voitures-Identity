@@ -1,8 +1,40 @@
-﻿@{
+﻿@model IEnumerable<P5_Express_Voitures_Identity.ViewModels.VoitureVM>
+@{
     ViewData["Title"] = "Home Page";
 }
 
+<head>
+    <style>
+        .img-thumbnail {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+
 <div class="text-center">
-    <h1 class="display-4">Les meilleures voitures d'occasion:</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1 class="display-4">Les meilleures voitures d'occasion:</h1>
+
+
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <h3>@item.Voiture.Marque @item.Voiture.Modele de @item.Voiture.DateAchat.Year</h3>
+                <h4>Prix de vente: @item.Voiture.PrixVente</h4>
+                <p>Statut: @item.StatutVoiture</p>
+                @if (item.Annonce.Photos != null && item.Annonce.Photos.Any())
+                {
+                    <a href="@Url.Content("~/Voitures/images/" + System.IO.Path.GetFileName(item.Annonce.Photos.FirstOrDefault().LienPhoto))" class="img-thumbnail" )">
+                        <img src="@Url.Content("~/Voitures/images/" + System.IO.Path.GetFileName(item.Annonce.Photos.FirstOrDefault().LienPhoto))" alt="Photo de la voiture" class="img-thumbnail">
+                    </a>
+                }
+                else
+                {
+                    <p>Aucune photo disponible</p>
+                }
+            }
+        }
+    </tbody>
 </div>

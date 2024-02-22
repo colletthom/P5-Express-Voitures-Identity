@@ -15,10 +15,17 @@ namespace P5_Express_Voitures_Identity.ViewModels
 
         public string StatutVoiture;
 
+        public Annonce Annonce { get; set; }
+
         public VoitureVM(Voiture Voiture, ApplicationDbContext context)
         {
             this.Voiture = Voiture;
             this._context = context;
+
+            this.Annonce = _context.Annonces.FirstOrDefault(a => a.IdVoiture == Voiture.Id);
+            Annonce.Photos = _context.Photos
+                .Where(a => a.IdAnnonce == Annonce.Id)
+                .ToList();
         }
 
         public float CalculTotalReparation()
@@ -43,7 +50,7 @@ namespace P5_Express_Voitures_Identity.ViewModels
             {
                 if (Voiture.DateVente == null)
                 {
-                    return StatutVoiture = "Disponible";
+                    return StatutVoiture = "Disponible à la vente";
                 }
                 else
                 {
