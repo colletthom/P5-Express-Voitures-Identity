@@ -4,6 +4,15 @@
     ViewData["Title"] = "Edit";
 }
 
+<head>
+    <style>
+    .img-thumbnail {
+        width: 100px;
+        height : 100px;
+    }
+</style>
+</head>
+
 <h1>Edit</h1>
 
 <h4>Annonce</h4>
@@ -71,8 +80,8 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.LienPhoto)
                     </td>
-                    <td>
-                        <img src="@item.LienPhoto" class="img-thumbnail" />
+                    <td>                                          
+                        <img src="@Url.Content("~/Voitures/images/" + System.IO.Path.GetFileName(item.LienPhoto))" class="img-thumbnail" />
                     </td>
                     <td>
                         <a asp-action="Edit" asp-controller="Photos" asp-route-id="@item.Id" asp-route-idAnnonce="@Model.Id" asp-route-idVoiture="@Model.IdVoiture">Edit</a> |
