@@ -34,11 +34,13 @@ namespace P5_Express_Voitures_Identity.Controllers
             foreach (var vm in voitureVMs)
             {
                 vm.CalculTotalReparation();
+                vm.CalculStatutVoiture();
 
                 if (vm.Voiture.PrixVente == null)
                 {
                     vm.Voiture.PrixVente = vm.CalculPrixVente();
                 }
+
             }
 
 

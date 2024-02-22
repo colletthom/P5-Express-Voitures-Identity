@@ -109,7 +109,7 @@ namespace P5_Express_Voitures_Identity.Models
         public enum StatutVoiture
         {
             Vendue = 0,
-            PlusDisponible = 1,
+            Disponible = 1,
         }
 
         public ICollection<Reparation>? Reparations { get; set; }
