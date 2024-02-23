@@ -130,8 +130,9 @@ namespace P5_Express_Voitures_Identity.Controllers
         }
 
         // GET: Photos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int idVoiture)
         {
+            ViewData["idVoiture"] = idVoiture;
             if (id == null)
             {
                 return NotFound();
@@ -150,7 +151,7 @@ namespace P5_Express_Voitures_Identity.Controllers
         // POST: Photos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int idVoiture)
         {
             var photo = await _context.Photos.FindAsync(id);
             if (photo != null)
@@ -159,7 +160,7 @@ namespace P5_Express_Voitures_Identity.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Edit", "Annonces", new {  id = photo?.IdAnnonce });
+            return RedirectToAction("Edit", "Annonces", new {  id = photo.IdAnnonce, idvoiture = idVoiture });
         }
 
         private bool PhotoExists(int id)

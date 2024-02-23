@@ -89,8 +89,9 @@ namespace P5_Express_Voitures_Identity.Controllers
                     IdVoiture = voiture.Id,
                     TitreAnnonce = "Vente d'une voiture de marque " + voiture.Marque + " et de modèle "
                            + voiture.Modele + " de " + voiture.Annee
-
                 };
+                _context.Add(AnnonceCree);
+                await _context.SaveChangesAsync();
 
                 if (voiture.DateVente != null)
                 {
@@ -99,9 +100,6 @@ namespace P5_Express_Voitures_Identity.Controllers
                     _context.Voitures.Update(voiture);
                     await _context.SaveChangesAsync();
                 }
-
-                _context.Add(AnnonceCree);
-                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }

@@ -6,18 +6,23 @@
 <head>
     <style>
         .img-thumbnail {
-            max-width: 400px;
-            max-height: 200px;
+            max-width: 200px;
+            max-height: 100px;
             object-fit: cover;
+        }
+
+        body{
+            background-color: #f2f2f2;
         }
     </style>
 </head>
 
-<div class="text-center">
+<div class="text-center" style="font-weight: bold; ">
 <h1 class="display-4">Les meilleures voitures d'occasion:</h1>
+    <h2 class="display-6">Appelez nous au 06 06 06 06 06</h2>
+</div>
 
-
-    <div class="container">
+    <div class="container" style="background-color: #33D7Ff;"">
         <tbody>
             @if (Model != null)
             {
@@ -27,18 +32,24 @@
                         <div class="col-md-3">
                             <div class="item">
                                 <h3>@item.Voiture.Marque @item.Voiture.Modele de @item.Voiture.DateAchat.Year</h3>
-                                <h4>Prix de vente: @item.Voiture.PrixVente</h4>
-                                <p>Statut: @item.StatutVoiture</p>
+                                <h4>Prix de vente: @item.Voiture.PrixVente</h4>                             
                                 @if (item.Annonce.Photos != null && item.Annonce.Photos.Any())
                                 {
-                                    <a href="@Url.Content("~/Voitures/images/" + System.IO.Path.GetFileName(item.Annonce.Photos.FirstOrDefault().LienPhoto))" data-lightbox="voitures" class="img-thumbnail">
-                                        <img src="@Url.Content("~/Voitures/images/" + System.IO.Path.GetFileName(item.Annonce.Photos.FirstOrDefault().LienPhoto))" alt="Photo de la voiture" class="img-thumbnail">
-                                    </a>
+                                    <div>
+                                        @foreach (var image in item.Annonce.Photos)
+                                        {
+                                        <a href="@Url.Content("~/Voitures/images/" + System.IO.Path.GetFileName(image.LienPhoto))" data-lightbox="voitures" class="img-thumbnail">
+                                                <img src="@Url.Content("~/Voitures/images/" + System.IO.Path.GetFileName(image.LienPhoto))" alt="Photo de la voiture" class="img-thumbnail">
+                                        </a>
+                                        }
+                                    </div>
                                 }
                                 else
                                 {
                                     <p>Aucune photo disponible</p>
                                 }
+                            <p>@item.Annonce.DescriptionAnnonce</p>
+                            <p>Statut: @item.StatutVoiture</p>
                             </div>
                         </div>
                     }

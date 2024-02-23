@@ -19,7 +19,7 @@
         </dd>
     </dl>
 
-    <form asp-action="Delete">
+    <form asp-action="Delete" asp-route-idVoiture="@ViewData["idVoiture"]">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Edit" asp-controller="Annonces" asp-route-id="@Model.IdAnnonce" asp-route-idVoiture="@ViewData["idVoiture"]">Retour à l'édition de l'annonce</a>
