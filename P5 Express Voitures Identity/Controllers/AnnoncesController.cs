@@ -21,14 +21,12 @@ namespace P5_Express_Voitures_Identity.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
-        private readonly ImageService _imageService;
 
-        public AnnoncesController(ApplicationDbContext context, IConfiguration configuration, IWebHostEnvironment environment, ImageService imageService)
+        public AnnoncesController(ApplicationDbContext context, IConfiguration configuration, IWebHostEnvironment environment)
         {
             _context = context;
             _configuration = configuration;
             _environment = environment;
-            _imageService = imageService;
         }
 
         // GET: Annonces

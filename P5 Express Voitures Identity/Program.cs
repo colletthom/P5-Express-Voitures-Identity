@@ -18,7 +18,6 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<PathService>();
-builder.Services.AddSingleton<ImageService>();
 
 var app = builder.Build();
 

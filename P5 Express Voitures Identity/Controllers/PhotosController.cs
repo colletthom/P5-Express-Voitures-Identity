@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using P5_Express_Voitures_Identity.Data;
 using P5_Express_Voitures_Identity.Models;
+using P5_Express_Voitures_Identity.Models.Service;
 
 namespace P5_Express_Voitures_Identity.Controllers
 {
@@ -15,10 +18,14 @@ namespace P5_Express_Voitures_Identity.Controllers
     public class PhotosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-        public PhotosController(ApplicationDbContext context)
+        public PhotosController(ApplicationDbContext context, IConfiguration configuration, IWebHostEnvironment environment)
         {
             _context = context;
+            _configuration = configuration;
+            _environment = environment;
         }
 
         // GET: Photos
@@ -154,10 +161,20 @@ namespace P5_Express_Voitures_Identity.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id, int idVoiture)
         {
             var photo = await _context.Photos.FindAsync(id);
-            if (photo != null)
+            if (photo == null)
             {
-                _context.Photos.Remove(photo);
+                return NotFound();
             }
+
+            //suppresion de la photo stocké
+            var pathService = new PathService(_configuration, _environment);
+            var filePath = pathService.GetUploadsPath(photo.Nom);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+            _context.Photos.Remove(photo);
+
 
             await _context.SaveChangesAsync();
             return RedirectToAction("Edit", "Annonces", new {  id = photo.IdAnnonce, idvoiture = idVoiture });
