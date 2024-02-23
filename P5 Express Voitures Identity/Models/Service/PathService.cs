@@ -2,7 +2,7 @@
 
 namespace P5_Express_Voitures_Identity.Models.Service
 {
-    public class PathService
+    public class PathService : IPathService
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environement;
