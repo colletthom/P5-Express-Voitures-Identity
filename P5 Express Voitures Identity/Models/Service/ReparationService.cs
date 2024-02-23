@@ -4,7 +4,7 @@ using P5_Express_Voitures_Identity.Data;
 
 namespace P5_Express_Voitures_Identity.Models.Service
 {
-    public class ReparationService
+    public class ReparationService : IReparationService
     {
         private readonly ApplicationDbContext _context;
 

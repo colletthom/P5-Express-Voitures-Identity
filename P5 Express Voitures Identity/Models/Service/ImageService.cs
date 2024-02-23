@@ -4,7 +4,7 @@ using P5_Express_Voitures_Identity.Models;
 namespace P5_Express_Voitures_Identity.Models.Service
 {
     public class ImageService
-    {
+    {/*
         private readonly PathService? pathService;
 
         public ImageService(PathService? pathService)
@@ -34,6 +34,6 @@ namespace P5_Express_Voitures_Identity.Models.Service
         private string GetRandomFileName(string filename)
         {
             return Guid.NewGuid() + Path.GetExtension(filename);
-        }
+        }*/
     }
 }
