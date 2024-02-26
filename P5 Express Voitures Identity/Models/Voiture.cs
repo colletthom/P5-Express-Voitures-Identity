@@ -106,12 +106,6 @@ namespace P5_Express_Voitures_Identity.Models
         [DateVenteValidation]
         public DateTime? DateVente { get; set; }
 
-        public enum StatutVoiture
-        {
-            Vendue = 0,
-            Disponible = 1,
-        }
-
         public ICollection<Reparation>? Reparations { get; set; }
     }
 }

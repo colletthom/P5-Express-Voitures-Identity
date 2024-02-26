@@ -36,7 +36,15 @@ namespace P5_Express_Voitures_Identity.ViewModels
 
         public float CalculPrixVente()
         {
-            return this.Voiture.PrixAchat + CalculTotalReparation() + this.MargeParVoiture();
+            if (this.MargeParVoiture != null) 
+            {
+                return this.Voiture.PrixAchat + CalculTotalReparation() + this.MargeParVoiture();
+            }
+            else
+            {
+                return this.Voiture.PrixAchat + CalculTotalReparation();
+            }
+            
         }
 
         public int MargeParVoiture()
