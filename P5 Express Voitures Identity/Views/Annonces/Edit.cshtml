@@ -7,7 +7,7 @@
 <head>
     <style>
     .img-thumbnail {
-        width: 100px;
+        width: 200px;
         height : 100px;
     }
 </style>
@@ -53,10 +53,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Photos.FirstOrDefault().Nom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Photos.FirstOrDefault().LienPhoto)
+                Nom de la photo
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Photos.FirstOrDefault().Fichier)
@@ -77,15 +74,11 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Nom)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LienPhoto)
-                    </td>
                     <td>                                          
                         <img src="@Url.Content("~/Voitures/images/" + System.IO.Path.GetFileName(item.LienPhoto))" class="img-thumbnail" />
                     </td>
                     <td>
                         <a asp-action="Edit" asp-controller="Photos" asp-route-id="@item.Id" asp-route-idAnnonce="@Model.Id" asp-route-idVoiture="@Model.IdVoiture">Edit</a> |
-                        <a asp-action="Details" asp-controller="Photos" asp-route-id="@item.Id" asp-route-idAnnonce="@Model.Id" asp-route-idVoiture="@Model.IdVoiture">Details</a> |
                         <a asp-action="Delete" asp-controller="Photos" asp-route-id="@item.Id" asp-route-idAnnonce="@Model.Id" asp-route-idVoiture="@Model.IdVoiture">Delete</a>
                     </td>
                 </tr>

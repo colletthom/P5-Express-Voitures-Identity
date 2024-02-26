@@ -22,7 +22,7 @@
     <h2 class="display-6">Appelez nous au 06 06 06 06 06</h2>
 </div>
 
-    <div class="container" style="background-color: #33D7Ff;"">
+<div class="container" style="background-color: #33D7Ff;" ">
         <tbody>
             @if (Model != null)
             {
@@ -30,7 +30,7 @@
                     @foreach (var item in Model)
                     {
                         <div class="col-md-3">
-                            <div class="item">
+                        <div class="item" >
                                 <h3>@item.Voiture.Marque @item.Voiture.Modele de @item.Voiture.Annee</h3>
                                 <h4>Prix de vente: @item.Voiture.PrixVente €</h4>                             
                                 @if (item.Annonce.Photos != null && item.Annonce.Photos.Any())

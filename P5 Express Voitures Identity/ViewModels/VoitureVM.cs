@@ -36,9 +36,9 @@ namespace P5_Express_Voitures_Identity.ViewModels
 
         public float CalculPrixVente()
         {
-            if (this.MargeParVoiture != null) 
+            if (this.DerniereMargeParVoiture != null) 
             {
-                return this.Voiture.PrixAchat + CalculTotalReparation() + this.MargeParVoiture();
+                return this.Voiture.PrixAchat + CalculTotalReparation() + this.DerniereMargeParVoiture();
             }
             else
             {
@@ -47,7 +47,7 @@ namespace P5_Express_Voitures_Identity.ViewModels
             
         }
 
-        public int MargeParVoiture()
+        public int DerniereMargeParVoiture()
         {
             return _context.Marges.OrderByDescending(m => m.Id).FirstOrDefault().Value;
         }
