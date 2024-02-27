@@ -9,9 +9,22 @@ namespace P5_Express_Voitures_Identity.Models
         [Display(Name = "Code Vin")]
         public string? CodeVin { get; set; }
 
+        public class AnneeValidationAttribute : ValidationAttribute
+        {
+            protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+            {
+                int? annee = value as int?;
+
+                if (annee == null || (annee >= 1990 && annee <= DateTime.Now.Year))
+                {
+                    return ValidationResult.Success;
+                }
+                return new ValidationResult("La date d'achat doit être postérieure à 1990 et inférieur ou égale à l'année en cours");
+            }
+        }
         [Required(ErrorMessage = "l'année de la  voiture doit être complétée")]
         [RegularExpression("^\\d+$", ErrorMessage = "L'année doit être un entier")]
-        [Range(1990, 2100, ErrorMessage = "l'année doit être postérieure à 1990")]
+        [AnneeValidation]
         public int Annee { get; set; }
 
         [Required(ErrorMessage = "La marque doit être complétée")]
