@@ -193,6 +193,15 @@ namespace P5_Express_Voitures_Identity.Controllers
             var voiture = await _context.Voitures.FindAsync(id);
             var annonce = await _context.Annonces
                 .SingleOrDefaultAsync(a => a.IdVoiture == id);
+            List<Photo> photos = await _context.Photos.Where(p=>p.IdAnnonce == annonce.Id).ToListAsync();
+
+            if (photos!= null)
+            {
+                foreach (Photo photo in photos)
+                {
+                    _context.Photos.Remove(photo);
+                }
+            }
 
             if (voiture != null && annonce != null)
             {
