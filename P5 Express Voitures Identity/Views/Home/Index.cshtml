@@ -11,10 +11,26 @@
             object-fit: cover;
         }
 
+        .item{
+            background-color: #33D7Ff;
+        }
+
         body{
             background-color: #f2f2f2;
         }
     </style>
+    <script>
+        window.onload = function() {
+            var items = document.getElementsByClassName("item");
+            var maxHeight = 0;
+            for (var i = 0; i < items.length; i++) {
+                maxHeight = Math.max(maxHeight, items[i].clientHeight);
+            }
+            for (var i = 0; i < items.length; i++) {
+                items[i].style.minHeight = maxHeight + "px";
+            }
+        }
+    </script>
 </head>
 
 <div class="text-center" style="font-weight: bold; ">
@@ -22,18 +38,18 @@
     <h2 class="display-6">Appelez nous au 06 06 06 06 06</h2>
 </div>
 
-<div class="container" style="background-color: #33D7Ff;" ">
+<div class="container" >
         <tbody>
             @if (Model != null)
             {
                 <div class="row">
                     @foreach (var item in Model)
                     {
-                        <div class="col-md-3">
-                        <div class="item" >
+                    <div class="col-md-3">
+                        <div class="item">
                                 <h3>@item.Voiture.Marque @item.Voiture.Modele de @item.Voiture.Annee</h3>
-                                <h4>Prix de vente: @item.Voiture.PrixVente €</h4>                             
-                                @if (item.Annonce.Photos != null && item.Annonce.Photos.Any())
+                            <h4>Prix de vente: @item.Voiture.PrixVente €</h4>
+                            @if (item.Annonce.Photos != null && item.Annonce.Photos.Any())
                                 {
                                     <div>
                                         @foreach (var image in item.Annonce.Photos)
