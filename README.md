@@ -1,11 +1,16 @@
-Site internet d'express Voiture (avec Home public) et un accès admin pour la gestion des véhicules (ajout/modifications/suppresion véhicules, réparations, annonce, photos).
-L'administrateur actuel du site est thomas.collet@axa.fr (se rapprocher de lui pour les droits d'accès).
+Site internet d'express Voiture:
+Ce site propose une interface publique et un accès administrateur pour la gestion des véhicules (ajout/modifications/suppresion véhicules, réparations, annonce, photos).
+L'administrateur actuel du site est thomas.collet@axa.fr.
 Le site est actuellement publié sur https://p5expressvoituresidentity20240223184658.azurewebsites.net/.
 
-prérequis:  .NET Core DSK 8.0.102
+Prérequis: 
+.NET Core DSK 8.0.102
+
+Clonage du dépot:
 Lors du lancement de l'IDE Visual Studio, cloner le dépot Git
 
-Pour installer les packages Nuggets : utiliser la commande "dotnet restore". A défaut les packages Nuggets utilisés sont :
+Installation des packages Nuggets : 
+Utilisez la commande "dotnet restore" pour installer les packages NuGet nécessaires. Voici la liste des packages NuGet utilisés :
 coverlet.collector, 
 Microsoft.AspNetCore.Components.QuickGrid, 
 Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter, 
@@ -24,5 +29,6 @@ Moq
 xunit
 xunit.runner.visualstudio
 
-L'application utilise une base de donnée SSMS le nom de la base de donnée est définit dans le connectionStrings de appsettings.json. A modifier si besoin
-Dans la console du gestionnaire de package Nuggets il convient de :
+Configuration de la base de données:
+L'application utilise une base de donnée SQL Server Management Studio (SSMS). Le nom de la base de donnée est défini dans le connectionStrings de appsettings.json. Modifiez-le si nécessaire.
+Dans la console du gestionnaire de package NuGet, exécutez la commande Update-Database pour mettre à jour la base de données.
