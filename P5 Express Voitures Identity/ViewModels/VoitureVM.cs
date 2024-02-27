@@ -49,7 +49,20 @@ namespace P5_Express_Voitures_Identity.ViewModels
 
         public int DerniereMargeParVoiture()
         {
-            return _context.Marges.OrderByDescending(m => m.Id).FirstOrDefault().Value;
+            try
+            {
+                return _context.Marges.OrderByDescending(m => m.Id).FirstOrDefault().Value;
+            }
+            catch
+            {
+
+                Object objetmarge = null;
+                objetmarge = new Marge { Value = 500 };
+                _context.Add(objetmarge);
+                _context.SaveChanges();
+                return _context.Marges.OrderByDescending(m => m.Id).FirstOrDefault().Value;
+            }
+            
         }
 
         public string CalculStatutVoiture()
