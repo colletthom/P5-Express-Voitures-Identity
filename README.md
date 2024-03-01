@@ -32,3 +32,9 @@ xunit.runner.visualstudio
 Configuration de la base de données:
 L'application utilise une base de donnée SQL Server Management Studio (SSMS). Le nom de la base de donnée est défini dans le connectionStrings de appsettings.json. Modifiez-le si nécessaire.
 Dans la console du gestionnaire de package NuGet, exécutez la commande Update-Database pour mettre à jour la base de données.
+
+Creation du compte admin en local:
+retirer [Authorize] dans le fichier Register.cshtml.cs situé dans Areas/Identity/Pages/account/Manage/register.cshtml/ Register.cshtml.cs
+Ensuite créer un nouveau compte sur https://localhost:..../Identity/Account/Register
+Ensuite remettre [Authorize]
+
